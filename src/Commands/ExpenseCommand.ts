@@ -27,7 +27,7 @@ export class ExpenseCommand extends Command {
             userId,
             value: Number.parseFloat(sharedValues[index]),
             shareType: shareType
-        }))
+        }));
         
         const expenseId = this.recordExpense(expense, shares);
         

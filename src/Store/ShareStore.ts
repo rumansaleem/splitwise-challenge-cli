@@ -20,6 +20,7 @@ export interface Share {
     shareType: ShareType;
     userId: string;
     value: number;
+    amount?: number; 
 }
 
 export interface ShareWithExpense {
