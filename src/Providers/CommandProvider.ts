@@ -6,6 +6,7 @@ import { ExpensesRepositoryToken } from "../Repositories/ExpensesRepository";
 import { EmptyCommand } from "../Commands/EmptyCommand";
 import { InvalidCommand } from "../Commands/InvalidCommand";
 import { Provider } from "./Provider";
+import { Splitwise } from "../Splitwise";
 
 export class CommandProvider extends Provider {
     register(app: Application) {
@@ -15,7 +16,7 @@ export class CommandProvider extends Provider {
 
         app.bind<ExpenseCommand>(
             ExpenseCommand.name, 
-            () => new ExpenseCommand(app.resolve(ExpensesRepositoryToken))
+            () => new ExpenseCommand(app.resolve(ExpensesRepositoryToken), app.resolve(Splitwise.name))
         );
 
         app.bind<ShowCommand>(

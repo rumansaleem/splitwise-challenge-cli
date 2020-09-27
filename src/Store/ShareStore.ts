@@ -6,6 +6,10 @@ export class ShareStore extends Store<Share> {
     getId() {
         return null;
     }
+
+    getByExpenseId(expenseId: string): Share[] {
+        return this.getAll().filter(share => share.expenseId === expenseId);
+    }
 }
 
 export enum ShareType {
@@ -20,9 +24,9 @@ export interface Share {
     shareType: ShareType;
     userId: string;
     value: number;
-    amount?: number; 
+    amount: number; 
 }
 
-export interface ShareWithExpense {
+export interface ShareWithExpense extends Share {
     expense: Expense;
 }

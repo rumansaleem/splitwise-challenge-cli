@@ -1,6 +1,7 @@
 import { Command } from "./Command";
 import { CommmandTypes } from "../CommmandTypes";
-import { ExpensesRepositoryInterface } from "../Repositories/ExpensesRepository";
+import { ExpensesRepositoryInterface, DebtRecord } from "../Repositories/ExpensesRepository";
+import { Share, ShareWithExpense } from "../Store/ShareStore";
 
 export class ShowCommand implements Command {
     public readonly commandId = CommmandTypes.SHOW;
@@ -12,10 +13,23 @@ export class ShowCommand implements Command {
     }
 
     private showAll(): string {
-        return JSON.stringify(this.expenseRepository.getAllShares());
+        const debts = this.expenseRepository.getAllDebts();
+        return this.presentDebts(debts);
     }
 
     private showById(userId: string): string {
-        return JSON.stringify(this.expenseRepository.getAllShareByUserId(userId));
+        const debts = this.expenseRepository.getAllDebtsByUserId(userId);
+
+        return this.presentDebts(debts);
+    }
+
+    private simplifyDebts(debts: DebtRecord[]) {
+        
+    }
+
+    private presentDebts(debts: DebtRecord[]): string {
+        return debts
+            .map(debt => `[User:${debt.payeeId}] owes [User:${debt.payerId}] ${debt.amount}$`)
+            .join("\n");
     }
 }

@@ -17,7 +17,7 @@ export abstract class Store<D> implements StoreInterface<D> {
         const key = this.getId(item) || uuid();
         this.keys = [ ...this.keys, key ];
         
-        this.entites[key] = item;
+        this.entites[key] = {...item, [this.idAttribute]: key};
 
         return key;
     }

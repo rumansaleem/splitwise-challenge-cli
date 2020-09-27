@@ -1,12 +1,18 @@
-import { Expense, ExpenseStore } from "../Store/ExpenseStore";
+import { Expense, ExpenseStore, ExpenseWithShares } from "../Store/ExpenseStore";
 import { Share, ShareType, ShareStore } from "../Store/ShareStore";
 
 export const ExpensesRepositoryToken = 'ExpenseRepository';
 
+export interface DebtRecord {
+    payerId: string;
+    payeeId: string;
+    amount: number;
+}
+
 export interface ExpensesRepositoryInterface {
     insertExpense(expense: Expense, shares: Share[]): string;
-    getAllShares(): Share[];
-    getAllShareByUserId(userId: string): Share[];
+    getAllDebts(): DebtRecord[];
+    getAllDebtsByUserId(userId: string): DebtRecord[];
 }
 
 export class ExpensesStoreRepository implements ExpensesRepositoryInterface {
@@ -20,17 +26,20 @@ export class ExpensesStoreRepository implements ExpensesRepositoryInterface {
         return expenseId;
     }
 
-    getAllShares(): Share[] {
-        return this.shareStore.getAll();
+    getAllDebts(): DebtRecord[] {
+        return this.expenseStore.getAll()
+            .flatMap(expense => this.shareStore.getByExpenseId(expense.id || '')
+                .filter(share => share.userId !== expense.payerId)
+                    .map(share => ({
+                        payerId: expense.payerId, 
+                        payeeId: share.userId, 
+                        amount: share.amount
+                    }))
+            );
     }
 
-    getAllShareByUserId(userId: string): Share[] {
-        const paidExpense = this.expenseStore.getAll()
-            .filter(expense => expense.payerId === userId);
-
-        const paidExpenseIds = paidExpense.map(expense => expense.id);
-
-        return this.shareStore.getAll()
-            .filter(share => share.userId === userId);
+    getAllDebtsByUserId(userId: string): DebtRecord[] {
+        return this.getAllDebts()
+            .filter(debt => debt.payeeId === userId || debt.payerId === userId);
     }
 }

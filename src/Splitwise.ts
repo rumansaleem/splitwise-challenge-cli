@@ -1,9 +1,5 @@
 import { SplitterInterface, AbstractSplitter } from "./Splitters/SplitterInterface";
 import { ShareType } from "./Store/ShareStore";
-import { EqualSplitter } from "./Splitters/EqualSplitter";
-import { ExactSplitter } from "./Splitters/ExactSplitter";
-import { PercentSplitter } from "./Splitters/PercentSplitter";
-import app from "../bootstrap";
 import { SplitwiseProvider } from "./Providers/SplitwiseProvider";
 import { Application } from "./Application";
 

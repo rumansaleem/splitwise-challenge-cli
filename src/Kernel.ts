@@ -21,9 +21,14 @@ export class Kernel {
     public handle(commandString: string): string {
         const [commandId, ...args] = commandString.split(' ');
         
-        const command = this.parseCommand(commandId.replace(/\s/g, ''));
+        try {
+            const command = this.parseCommand(commandId.replace(/\s/g, ''));
+    
+            return command.run(args);
+        } catch(error) {
+            return this.handleError(error);
+        }
 
-        return command.run(args);
     }
 
     private parseCommand(commandId: string): Command {
@@ -36,5 +41,9 @@ export class Kernel {
         } 
 
         return app.resolve<InvalidCommand>(InvalidCommand.name);
+    }
+
+    private handleError(error: Error) {
+        return `ERROR: ${error.message}`;
     }
 }
